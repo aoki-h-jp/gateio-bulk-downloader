@@ -16,7 +16,8 @@ from rich import print
 from rich.progress import track
 
 # import my libraries
-from gateio_bulk_downloader.exceptions import InvalidIntervalError, InvalidSymbolFormatError
+from gateio_bulk_downloader.exceptions import (InvalidIntervalError,
+                                               InvalidSymbolFormatError)
 
 warnings.filterwarnings("ignore")
 
@@ -110,10 +111,12 @@ class GateioBulkDownloader:
             "to": int(end_date.timestamp()),
             "interval": interval,
         }
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
         for attempt in range(max_retries):
             try:
-                response = requests.get(self._make_url(symbol), params=params, headers=headers)
+                response = requests.get(
+                    self._make_url(symbol), params=params, headers=headers
+                )
                 print(
                     f"[green]Success: {self._make_destination_dir(symbol, interval)}/{int(start_date.timestamp())}.csv[/green]"
                 )
@@ -123,7 +126,7 @@ class GateioBulkDownloader:
                         print(f"[yellow]Skip: {symbol}[/yellow]")
                         break
                     df = pd.DataFrame(data)
-                    df['t'] = pd.to_datetime(df['t'], unit='s')
+                    df["t"] = pd.to_datetime(df["t"], unit="s")
                     df.to_csv(
                         f"{self._make_destination_dir(symbol, interval)}/{int(start_date.timestamp())}.csv",
                         index=False,
